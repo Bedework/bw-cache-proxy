@@ -16,15 +16,9 @@
 
 package org.bedework.cache.vertx;
 
-import java.text.MessageFormat;
-
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.VoidHandler;
-import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpClient;
-import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.http.HttpServerRequest;
+import org.vertx.java.core.http.HttpServer;
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;
 
 /**
@@ -44,62 +38,42 @@ public class ProxyVerticle extends Verticle {
     @Override
     public void start() {
         final boolean debugEnabled = this.container.config().getBoolean("debug");
-        final String remoteHost = this.container.config().getString("remote-host");
-        final int remotePort = this.container.config().getInteger("remote-port");
-        final int localPort = this.container.config().getInteger("local-port");
-        
+
+        JsonObject proxyTo = this.container.config().getObject("proxy-to");
+        JsonObject localServer = this.container.config().getObject("local-server");
+
+        final String remoteHost = proxyTo.getString("host");
+        final int remotePort = proxyTo.getInteger("port");
+        final boolean remoteSSL = proxyTo.getBoolean("ssl");
+
+        final int localPort = localServer.getInteger("port");
+        final boolean localSSL = localServer.getBoolean("ssl");
+
+        // Configure the HTTP client used to fetch data from the proxied server
         final HttpClient client = vertx.createHttpClient().setHost(remoteHost).setPort(remotePort);
+        if (remoteSSL) {
+            JsonObject keystore = proxyTo.getObject("keystore");
+            if (keystore != null) {
+                String remoteKeystore = keystore.getString("path");
+                String remoteKeystorePassword = keystore.getString("password");
+                client.setSSL(true).setKeyStorePath(remoteKeystore).setKeyStorePassword(remoteKeystorePassword);
+            } else {
+                client.setSSL(true).setTrustAll(true);
+            }
+        }
         final int instanceId = instanceCounter++;
 
-        vertx.createHttpServer().requestHandler(new Handler<HttpServerRequest>() {
-
-            protected final void debug(int id, String message, Object ... args) {
-                if (debugEnabled)
-                    System.out.println("" + instanceId + "-" + id + ":: " + MessageFormat.format(message, args));
-            }
-
-            @Override
-            public void handle(final HttpServerRequest request) {
-                final int requestId = requestCounter++;
-                debug(requestId, "Proxying request: " + request.uri());
-                final HttpClientRequest clientReq = client.request(request.method(), request.uri(),
-                        new Handler<HttpClientResponse>() {
-                            public void handle(HttpClientResponse clientResp) {
-                                debug(requestId, "    Proxying to client");
-                                request.response().setStatusCode(clientResp.statusCode());
-                                request.response().setStatusMessage(clientResp.statusMessage());
-                                request.response().headers().set(clientResp.headers());
-                                clientResp.dataHandler(new Handler<Buffer>() {
-                                    public void handle(Buffer data) {
-                                        debug(requestId, "    Writing response data");
-                                        request.response().write(data);
-                                    }
-                                });
-                                clientResp.endHandler(new VoidHandler() {
-                                    public void handle() {
-                                        debug(requestId, "    Ending server response");
-                                        request.response().end();
-                                    }
-                                });
-                            }
-                        });
-                clientReq.headers().set(request.headers());
-                clientReq.headers().set("Host", remoteHost + ":" + remotePort);
-                request.dataHandler(new Handler<Buffer>() {
-                    public void handle(Buffer data) {
-                        debug(requestId, "    Proxying data");
-                        clientReq.write(data);
-                    }
-                });
-                request.endHandler(new VoidHandler() {
-                    public void handle() {
-                        debug(requestId, "    Ending client request");
-                        clientReq.end();
-                    }
-                });
-                debug(requestId, "Handled");
-            }
-        }).listen(localPort);
+        // Configure the local server
+        HttpServer httpServer = vertx.createHttpServer();
+        if (localSSL) {
+            String localKeystore = localServer.getObject("keystore").getString("path");
+            String localKeystorePassword = localServer.getObject("keystore").getString("password");
+            
+            httpServer = httpServer.setSSL(true).setKeyStorePath(localKeystore).setKeyStorePassword(localKeystorePassword);
+        }
+        
+        
+        httpServer.requestHandler(new ProxyHandler(debugEnabled, instanceId, client)).listen(localPort);
         System.out.println("=====  ==============================  =====");
         System.out.println("=====  Bedework Caching Proxy Started  =====");
         System.out.println("=====  ==============================  =====");
