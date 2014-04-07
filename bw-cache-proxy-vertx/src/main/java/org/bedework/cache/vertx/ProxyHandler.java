@@ -164,9 +164,9 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
      * @param request
      * @param key
      */
-    protected void cacheAndSend(int requestId, final HttpClientResponse clientResp, final HttpServerRequest request,
+    protected void cacheAndSend(final int requestId, final HttpClientResponse clientResp, final HttpServerRequest request,
             final CacheKeyBean key) {
-        debug(requestId, "    Caching response.");
+        debug(requestId, "    Caching and sending response.  Code=" + clientResp.statusCode());
         final Buffer dataToCache = new Buffer();
         final HttpResponseBean response = new HttpResponseBean();
         response.setCode(clientResp.statusCode());
@@ -175,6 +175,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
             response.getHeaders().put(entry.getKey(), entry.getValue());
         }
         final String etag = clientResp.headers().get("ETag");
+        
         clientResp.dataHandler(new Handler<Buffer>() {
             public void handle(Buffer data) {
                 dataToCache.appendBuffer(data);
@@ -183,7 +184,10 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
         clientResp.endHandler(new VoidHandler() {
             public void handle() {
                 response.setBody(dataToCache.getBytes());
-                ProxyServices.getCache().updateCache(key, etag, response);
+                if (etag != null) {
+                    debug(requestId, "    Actually caching response.");
+                    ProxyServices.getCache().updateCache(key, etag, response);
+                }
                 doSendCachedCopy(request, response);
             }
         });
