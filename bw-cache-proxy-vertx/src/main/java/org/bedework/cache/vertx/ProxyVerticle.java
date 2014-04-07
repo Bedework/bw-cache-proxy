@@ -1,19 +1,21 @@
-/*
- * Copyright 2013 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* ********************************************************************
+    Licensed to Jasig under one or more contributor license
+    agreements. See the NOTICE file distributed with this work
+    for additional information regarding copyright ownership.
+    Jasig licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file
+    except in compliance with the License. You may obtain a
+    copy of the License at:
 
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+*/
 package org.bedework.cache.vertx;
 
 import org.vertx.java.core.http.HttpClient;
@@ -30,7 +32,6 @@ import org.vertx.java.platform.Verticle;
 public class ProxyVerticle extends Verticle {
     
     private static int instanceCounter = 0;
-    private int requestCounter = 0;
 
     /**
      * @see org.vertx.java.platform.Verticle#start()
@@ -38,7 +39,9 @@ public class ProxyVerticle extends Verticle {
     @Override
     public void start() {
         final boolean debugEnabled = this.container.config().getBoolean("debug");
-
+        
+        ProxyServices.init(this.container.config());
+        
         JsonObject proxyTo = this.container.config().getObject("proxy-to");
         JsonObject localServer = this.container.config().getObject("local-server");
 
@@ -72,14 +75,18 @@ public class ProxyVerticle extends Verticle {
             httpServer = httpServer.setSSL(true).setKeyStorePath(localKeystore).setKeyStorePassword(localKeystorePassword);
         }
         
-        
+        // Start up the local server
         httpServer.requestHandler(new ProxyHandler(debugEnabled, instanceId, client)).listen(localPort);
-        System.out.println("=====  ==============================  =====");
-        System.out.println("=====  Bedework Caching Proxy Started  =====");
-        System.out.println("=====  ==============================  =====");
-        System.out.println("       Listening on:  " + localPort);
-        System.out.println("       Proxying Host: " + remoteHost);
-        System.out.println("                Port: " + remotePort);
-        System.out.println("=====  ==============================  =====");
+        
+        if (instanceId == 0) {
+            System.out.println("=====  ==============================  =====");
+            System.out.println("=====  Bedework Caching Proxy Started  =====");
+            System.out.println("=====  ==============================  =====");
+            System.out.println("         Listening on: " + localPort);
+            System.out.println("        Proxying Host: " + remoteHost);
+            System.out.println("                 Port: " + remotePort);
+            System.out.println("       Cache Provider: " + ProxyServices.getCache().getClass().getName());
+            System.out.println("=====  ==============================  =====");
+        }
     }
 }

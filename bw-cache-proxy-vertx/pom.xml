@@ -8,16 +8,33 @@
   </parent>
   <artifactId>bw-cache-proxy-vertx</artifactId>
   <name>bw-cache-proxy-vertx</name>
-  
+
   <properties>
     <vertx.pullInDeps>false</vertx.pullInDeps>
     <vertx.createFatJar>false</vertx.createFatJar>
     <module.name>${project.groupId}~${project.artifactId}~${project.version}</module.name>
     <mods.directory>target/mods</mods.directory>
   </properties>
-  
+
   <dependencies>
-    <!--Vertx provided dependencies -->
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>bw-cache-proxy-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>bw-cache-proxy-ehcache</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>bw-cache-proxy-inmem</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- vert.x dependencies -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
@@ -43,9 +60,9 @@
         <artifactId>vertx-maven-plugin</artifactId>
         <version>${maven.vertx.plugin.version}</version>
         <configuration>
-           <configFile>${basedir}/src/main/config/bw-cache-proxy-vertx.conf</configFile>
-           <instances>1</instances>
-           <classpath>src/main/resources/:target/classes/</classpath>
+          <configFile>${basedir}/src/main/config/bw-cache-proxy-vertx.conf</configFile>
+          <instances>2</instances>
+          <classpath>src/main/resources/:target/classes/</classpath>
         </configuration>
         <!-- Make sure that the plugin uses the vert.x versions from this pom.xml not from its own pom.xml -->
         <dependencies>

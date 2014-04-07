@@ -60,6 +60,7 @@
     <module>bw-cache-proxy-ehcache</module>
     <module>bw-cache-proxy-undertow</module>
     <module>bw-cache-proxy-vertx</module>
+    <module>bw-cache-proxy-inmem</module>
   </modules>
 
   <dependencyManagement>
