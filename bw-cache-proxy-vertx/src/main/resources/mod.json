@@ -1,0 +1,10 @@
+{
+  "main" : "org.bedework.cache.vertx.ProxyVerticle",
+  "description" : "A caching reverse proxy for Bedework.",
+  "licenses" : ["The Apache Software License Version 2.0"],
+  "author" : "Eric Wittmann",
+  "developers": ["Mike Douglass", "Arlen Johnson", "Barry Leibson"],
+  "keywords": ["cache", "bedework"],
+  "homepage": "https://github.com/Bedework/bw-cache-proxy",
+  "auto-redeploy": true
+}
