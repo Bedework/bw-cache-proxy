@@ -92,12 +92,11 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                         
                         int statusCode = clientResp.statusCode();
                         
-                        // If the response is "Not Modifed" then use our cached copy or reply with another 304
+                        // If the response is "Not Modifed" then either use our cached copy or simply proxy the 304
                         if (statusCode == 304) {
-                            if (requestedETag != null && cachedETag != null && cachedETag.equals(requestedETag)) {
-                                sendNotModified(requestId, request);
-                            } else if (cachedETag != null) {
+                            if (cachedETag != null) {
                                 sendCachedCopy(requestId, request, key);
+                                completeClientResponse(requestId, clientResp);
                             } else {
                                 justSend(requestId, clientResp, request);
                             }
@@ -135,15 +134,19 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
     }
 
     /**
-     * Since the ETags matched, send a 304 Not Modified response back to the client.
-     * @param requestId 
-     * @param request
+     * Completes the client response, making sure the resources are consumed.
+     * @param requestId
+     * @param clientResp
      */
-    protected void sendNotModified(int requestId, HttpServerRequest request) {
-        debug(requestId, "    Sending 304 Not Modified");
-        request.response().setStatusCode(304);
-        request.response().setStatusMessage("Not Modified");
-        request.response().end();
+    protected void completeClientResponse(int requestId, HttpClientResponse clientResp) {
+        clientResp.dataHandler(new Handler<Buffer>() {
+            public void handle(Buffer data) {
+            }
+        });
+        clientResp.endHandler(new VoidHandler() {
+            public void handle() {
+            }
+        });
     }
 
     /**
