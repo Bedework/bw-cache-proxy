@@ -96,8 +96,10 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                         if (statusCode == 304) {
                             if (requestedETag != null && cachedETag != null && cachedETag.equals(requestedETag)) {
                                 sendNotModified(requestId, request);
-                            } else {
+                            } else if (cachedETag != null) {
                                 sendCachedCopy(requestId, request, key);
+                            } else {
+                                justSend(requestId, clientResp, request);
                             }
                             return;
                         }
@@ -116,6 +118,8 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
         clientReq.headers().set("Host", client.getHost() + ":" + client.getPort());
         if (cachedETag != null) {
             clientReq.headers().set("If-None-Match", cachedETag);
+        } else {
+            clientReq.headers().remove("If-None-Match");
         }
         request.dataHandler(new Handler<Buffer>() {
             public void handle(Buffer data) {

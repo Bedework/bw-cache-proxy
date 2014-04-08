@@ -18,11 +18,106 @@
 */
 package org.bedework.cache.impl.ehcache;
 
+import java.util.Map;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+import org.bedework.cache.core.ICache;
+import org.bedework.cache.core.beans.CacheKeyBean;
+import org.bedework.cache.core.beans.HttpResponseBean;
+
 /**
- * 
+ * An implementation of a cache that uses ehcache.
  *
  * @author eric.wittmann@redhat.com
  */
-public class EhCache {
+public class EhCache implements ICache {
+    
+    private CacheManager manager;
+    
+    /**
+     * Constructor.
+     * @param properties
+     */
+    public EhCache(Map<String, String> properties) {
+        System.out.println("Starting ehcache provider.");
+        try {
+            String cacheConfigPath = properties.get("ehcache-config");
+            if (cacheConfigPath != null) {
+                System.out.println("Loading ehcache config from: " + cacheConfigPath);
+                manager = CacheManager.create(cacheConfigPath);
+            } else {
+                manager = CacheManager.create();
+            }
+        } catch (CacheException | IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @see org.bedework.cache.core.ICache#getETag(org.bedework.cache.core.beans.CacheKeyBean)
+     */
+    @Override
+    public String getETag(CacheKeyBean key) {
+        EhCacheKey etagKey = new EhCacheKey(key, true);
+        Cache cache = manager.getCache("proxyCache");
+        cache.acquireReadLockOnKey(etagKey);
+        
+        try {
+            Element element = cache.get(etagKey);
+            if (element != null) {
+                return (String) element.getObjectValue();
+            } else {
+                return null;
+            }
+        } finally {
+            cache.releaseReadLockOnKey(etagKey);
+        }
+    }
+
+    /**
+     * @see org.bedework.cache.core.ICache#getResponse(org.bedework.cache.core.beans.CacheKeyBean)
+     */
+    @Override
+    public HttpResponseBean getResponse(CacheKeyBean key) {
+        EhCacheKey etagKey = new EhCacheKey(key, true);
+        EhCacheKey cacheKey = new EhCacheKey(key, false);
+        Cache cache = manager.getCache("proxyCache");
+        cache.acquireReadLockOnKey(etagKey);
+
+        try {
+            Element element = cache.get(cacheKey);
+            if (element != null) {
+                return (HttpResponseBean) element.getObjectValue();
+            } else {
+                return null;
+            }
+        } finally {
+            cache.releaseReadLockOnKey(etagKey);
+        }
+    }
+
+    /**
+     * @see org.bedework.cache.core.ICache#updateCache(org.bedework.cache.core.beans.CacheKeyBean, java.lang.String, org.bedework.cache.core.beans.HttpResponseBean)
+     */
+    @Override
+    public void updateCache(CacheKeyBean key, String etag, HttpResponseBean response) {
+        EhCacheKey etagKey = new EhCacheKey(key, true);
+        EhCacheKey responseKey = new EhCacheKey(key, false);
+        Cache cache = manager.getCache("proxyCache");
+        cache.acquireWriteLockOnKey(etagKey);
+
+        try {
+            Element etagElem = new Element(etagKey, etag);
+            Element responseElem = new Element(responseKey, response);
+            cache.put(etagElem);
+            cache.put(responseElem);
+        } finally {
+            cache.releaseWriteLockOnKey(etagKey);
+        }
+    }
 
 }

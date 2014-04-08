@@ -61,9 +61,9 @@ public class ProxyServices {
         }
         try {
             Map<String, String> providerConfig = new HashMap<String, String>();
-            Set<String> fieldNames = config.getFieldNames();
+            Set<String> fieldNames = cacheConfig.getFieldNames();
             for (String fieldName : fieldNames) {
-                String fieldValue = providerConfig.get(fieldName);
+                String fieldValue = cacheConfig.getString(fieldName);
                 providerConfig.put(fieldName, fieldValue);
             }
             try {

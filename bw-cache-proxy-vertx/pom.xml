@@ -53,6 +53,17 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/config</directory>
+        <filtering>true</filtering>
+        <targetPath>sample-configs</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <!-- The vert.x Maven plugin -->
       <plugin>
@@ -60,7 +71,7 @@
         <artifactId>vertx-maven-plugin</artifactId>
         <version>${maven.vertx.plugin.version}</version>
         <configuration>
-          <configFile>${basedir}/src/main/config/bw-cache-proxy-vertx.conf</configFile>
+          <configFile>${basedir}/target/classes/sample-configs/bw-cache-proxy-vertx-ehcache.conf</configFile>
           <instances>2</instances>
           <classpath>src/main/resources/:target/classes/</classpath>
         </configuration>
