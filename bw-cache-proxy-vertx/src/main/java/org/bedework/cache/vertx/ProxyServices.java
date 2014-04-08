@@ -35,7 +35,15 @@ import org.vertx.java.core.json.JsonObject;
  */
 public class ProxyServices {
     
+    private static int instanceCounter = 0;
     private static ICache cache;
+    
+    /**
+     * @return a new instance ID
+     */
+    public static synchronized final int newInstanceId() {
+        return instanceCounter++;
+    }
 
     /**
      * Initialize and configure the services.

@@ -31,8 +31,6 @@ import org.vertx.java.platform.Verticle;
  */
 public class ProxyVerticle extends Verticle {
     
-    private static int instanceCounter = 0;
-
     /**
      * @see org.vertx.java.platform.Verticle#start()
      */
@@ -64,7 +62,7 @@ public class ProxyVerticle extends Verticle {
                 client.setSSL(true).setTrustAll(true);
             }
         }
-        final int instanceId = instanceCounter++;
+        final int instanceId = ProxyServices.newInstanceId();
 
         // Configure the local server
         HttpServer httpServer = vertx.createHttpServer();
