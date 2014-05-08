@@ -50,6 +50,20 @@
       <artifactId>vertx-hazelcast</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Library Dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -73,7 +87,6 @@
         <configuration>
           <configFile>${basedir}/target/classes/sample-configs/bw-cache-proxy-vertx-ehcache.conf</configFile>
           <instances>2</instances>
-          <classpath>src/main/resources/:target/classes/</classpath>
         </configuration>
         <!-- Make sure that the plugin uses the vert.x versions from this pom.xml not from its own pom.xml -->
         <dependencies>
