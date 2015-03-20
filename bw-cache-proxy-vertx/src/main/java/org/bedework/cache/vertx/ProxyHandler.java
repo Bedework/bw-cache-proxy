@@ -230,9 +230,17 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
      * @param response
      */
     private void doSendCachedCopy(HttpServerRequest request, HttpResponseBean response) {
+        boolean useChunkedMode = true;
+        for (String key : response.getHeaders().keySet()) {
+            if (key != null && key.trim().toLowerCase().equals("content-length")) {
+                useChunkedMode = false;
+            }
+        }
+        
         request.response().setStatusCode(response.getCode());
         request.response().setStatusMessage(response.getMessage());
         request.response().headers().set(response.getHeaders());
+        request.response().setChunked(useChunkedMode);
         Buffer buffer = new Buffer(response.getBody());
         request.response().write(buffer);
         request.response().end();
