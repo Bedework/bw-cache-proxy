@@ -125,6 +125,13 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                 clientReq.write(data);
             }
         });
+        request.exceptionHandler(new Handler<Throwable>() {
+            @Override
+            public void handle(Throwable event) {
+                debug(requestId, "    Error caught ({0}), ending client request", event.getMessage());
+                clientReq.end();
+            }
+        });
         request.endHandler(new VoidHandler() {
             public void handle() {
                 debug(requestId, "    Ending client request");
