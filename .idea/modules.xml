@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy.iml" filepath="$PROJECT_DIR$/bw-cache-proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy-core/bw-cache-proxy-core.iml" filepath="$PROJECT_DIR$/bw-cache-proxy-core/bw-cache-proxy-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy-ehcache/bw-cache-proxy-ehcache.iml" filepath="$PROJECT_DIR$/bw-cache-proxy-ehcache/bw-cache-proxy-ehcache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy-inmem/bw-cache-proxy-inmem.iml" filepath="$PROJECT_DIR$/bw-cache-proxy-inmem/bw-cache-proxy-inmem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy-undertow/bw-cache-proxy-undertow.iml" filepath="$PROJECT_DIR$/bw-cache-proxy-undertow/bw-cache-proxy-undertow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bw-cache-proxy-vertx/bw-cache-proxy-vertx.iml" filepath="$PROJECT_DIR$/bw-cache-proxy-vertx/bw-cache-proxy-vertx.iml" />
+    </modules>
+  </component>
+</project>
+

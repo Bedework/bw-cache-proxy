@@ -18,26 +18,28 @@
 */
 package org.bedework.cache.undertow;
 
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.Response;
-
 /**
  * Primary http exchange handler.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class RequestHandler implements HttpHandler {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private AsyncHttpClient client = new AsyncHttpClient();
 
@@ -58,7 +60,7 @@ public class RequestHandler implements HttpHandler {
         }
 
         String path = exchange.getRequestPath();
-        System.out.println("Handling path: " + path);
+        log.info("Handling path: " + path);
         client.prepareGet("http://www.reddit.com/" + path).execute(new AsyncCompletionHandler<Response>() {
             @Override
             public Response onCompleted(Response response) throws Exception {

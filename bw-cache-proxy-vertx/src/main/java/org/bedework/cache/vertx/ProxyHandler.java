@@ -18,9 +18,6 @@
 */
 package org.bedework.cache.vertx;
 
-import java.text.MessageFormat;
-import java.util.Map.Entry;
-
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
 import org.vertx.java.core.Handler;
@@ -30,15 +27,20 @@ import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
 import org.vertx.java.core.http.HttpServerRequest;
+import org.vertx.java.core.logging.Logger;
+
+import java.text.MessageFormat;
+import java.util.Map.Entry;
 
 /**
  * The http request handler used by the vert.x implementation of the bedework
  * caching proxy server.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class ProxyHandler implements Handler<HttpServerRequest> {
-    
+    private Logger log;
+
     private boolean debugEnabled;
     private int instanceId;
     private HttpClient client;
@@ -46,12 +48,13 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
 
     /**
      * Constructor.
-     * @param debugEnabled
      * @param instanceId
      * @param client
      */
-    public ProxyHandler(boolean debugEnabled, int instanceId, HttpClient client) {
-        this.debugEnabled = debugEnabled;
+    public ProxyHandler(final Logger log,
+                        int instanceId, HttpClient client) {
+        this.log = log;
+        debugEnabled = log.isDebugEnabled();
         this.instanceId = instanceId;
         this.client = client;
     }
@@ -62,9 +65,11 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
      * @param message
      * @param args
      */
-    protected final void debug(int id, String message, Object ... args) {
-        if (debugEnabled)
-            System.out.println("" + instanceId + "-" + id + ":: " + MessageFormat.format(message, args));
+    protected final void debug(int id,
+                               String message, Object ... args) {
+        if (debugEnabled) {
+            log.debug("" + instanceId + "-" + id + ":: " + MessageFormat.format(message, args));
+        }
     }
 
     /**
@@ -73,11 +78,11 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
     @Override
     public void handle(final HttpServerRequest request) {
         final int requestId = requestCounter++;
-        
+
         final String uri = request.uri();
         final String method = request.method();
         final CacheKeyBean key = new CacheKeyBean(method, uri);
-        
+
         // Check the cache for the page
         final String requestedETag = request.headers().get("If-None-Match");
         final String cachedETag = ProxyServices.getCache().getETag(key);
@@ -89,9 +94,9 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                 new Handler<HttpClientResponse>() {
                     public void handle(HttpClientResponse clientResp) {
                         debug(requestId, "    Proxying to client");
-                        
+
                         int statusCode = clientResp.statusCode();
-                        
+
                         // If the response is "Not Modifed" then either use our cached copy or simply proxy the 304
                         if (statusCode == 304) {
                             if (cachedETag != null) {
@@ -102,13 +107,13 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                             }
                             return;
                         }
-                        
+
                         // If we got a 200-299 response, cache it and return it
                         if (statusCode >= 200 && statusCode < 300) {
                             cacheAndSend(requestId, clientResp, request, key);
                             return;
                         }
-                        
+
                         // If we get any other response, send it without caching
                         justSend(requestId, clientResp, request);
                     }
@@ -158,7 +163,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
 
     /**
      * Send our cached copy back to the client.
-     * @param requestId 
+     * @param requestId
      * @param request
      * @param key
      */
@@ -173,7 +178,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
 
     /**
      * Cache the response and then send it back to the client.
-     * @param requestId 
+     * @param requestId
      * @param clientResp
      * @param request
      * @param key
@@ -189,7 +194,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
             response.getHeaders().put(entry.getKey(), entry.getValue());
         }
         final String etag = clientResp.headers().get("ETag");
-        
+
         clientResp.dataHandler(new Handler<Buffer>() {
             public void handle(Buffer data) {
                 dataToCache.appendBuffer(data);
@@ -209,7 +214,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
 
     /**
      * Proxy the response back to the client without caching it.
-     * @param requestId 
+     * @param requestId
      * @param clientResp
      * @param request
      */
@@ -243,7 +248,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                 useChunkedMode = false;
             }
         }
-        
+
         request.response().setStatusCode(response.getCode());
         request.response().setStatusMessage(response.getMessage());
         request.response().headers().set(response.getHeaders());

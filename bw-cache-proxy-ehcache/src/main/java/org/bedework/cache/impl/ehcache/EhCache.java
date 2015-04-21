@@ -18,16 +18,17 @@
 */
 package org.bedework.cache.impl.ehcache;
 
-import java.util.Map;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import org.bedework.cache.core.ICache;
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * An implementation of a cache that uses ehcache.
@@ -35,24 +36,26 @@ import org.bedework.cache.core.beans.HttpResponseBean;
  * @author eric.wittmann@redhat.com
  */
 public class EhCache implements ICache {
-    
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private CacheManager manager;
-    
+
     /**
      * Constructor.
      * @param properties
      */
     public EhCache(Map<String, String> properties) {
-        System.out.println("Starting ehcache provider.");
+        log.info("Starting ehcache provider.");
         try {
             String cacheConfigPath = properties.get("ehcache-config");
             if (cacheConfigPath != null) {
-                System.out.println("Loading ehcache config from: " + cacheConfigPath);
+                log.info("Loading ehcache config from: " + cacheConfigPath);
                 manager = CacheManager.create(cacheConfigPath);
             } else {
                 manager = CacheManager.create();
             }
         } catch (CacheException | IllegalStateException e) {
+            log.error("Exception:", e);
             throw new RuntimeException(e);
         }
     }
@@ -65,7 +68,7 @@ public class EhCache implements ICache {
         EhCacheKey etagKey = new EhCacheKey(key, true);
         Cache cache = manager.getCache("proxyCache");
         cache.acquireReadLockOnKey(etagKey);
-        
+
         try {
             Element element = cache.get(etagKey);
             if (element != null) {

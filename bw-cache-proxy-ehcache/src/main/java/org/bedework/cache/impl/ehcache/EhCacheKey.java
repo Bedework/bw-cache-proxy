@@ -18,9 +18,11 @@
 */
 package org.bedework.cache.impl.ehcache;
 
-import java.io.Serializable;
-
 import org.bedework.cache.core.beans.CacheKeyBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
 
 /**
  * Cache key used by the ehcache impl.
@@ -28,12 +30,11 @@ import org.bedework.cache.core.beans.CacheKeyBean;
  * @author eric.wittmann@redhat.com
  */
 public class EhCacheKey implements Serializable {
-
     private static final long serialVersionUID = 5338267390610485654L;
-    
+
     private CacheKeyBean key;
     private boolean etag;
-    
+
     /**
      * Constructor.
      * @param key
@@ -43,7 +44,7 @@ public class EhCacheKey implements Serializable {
         this.setKey(key);
         this.setEtag(etag);
     }
-    
+
     /**
      * Constructor.
      */

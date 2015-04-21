@@ -18,14 +18,16 @@
 */
 package org.bedework.cache.vertx;
 
+import org.bedework.cache.core.ICache;
+
+import org.vertx.java.core.json.JsonObject;
+import org.vertx.java.core.logging.Logger;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.bedework.cache.core.ICache;
-import org.vertx.java.core.json.JsonObject;
 
 /**
  * Stores singleton instances of the services used by the (potentially multiple)
@@ -34,36 +36,42 @@ import org.vertx.java.core.json.JsonObject;
  * @author eric.wittmann@redhat.com
  */
 public class ProxyServices {
-    
+    private static Logger log;
+
     private static int instanceCounter = 0;
     private static ICache cache;
-    
+
     /**
      * @return a new instance ID
      */
-    public static synchronized final int newInstanceId() {
+    public static synchronized int newInstanceId() {
         return instanceCounter++;
     }
 
     /**
      * Initialize and configure the services.
-     * @param config 
+     * @param config
      */
-    public static synchronized final void init(JsonObject config) {
-        if (cache != null)
+    public static synchronized void init(final Logger logger,
+            JsonObject config) {
+        log = logger;
+
+        if (cache != null) {
             return;
-        
-        System.out.println("Initializing services.");
+        }
+
+        log.info("Initializing services.");
         JsonObject cacheConfig = config.getObject("cache");
         String providerClassName = cacheConfig.getString("provider");
         Class<?> providerClass = null;
         try {
             providerClass = Class.forName(providerClassName);
         } catch (Exception e) {
-            // Try to get the class using the context classloader 
+            // Try to get the class using the context classloader
             try {
                 providerClass = Thread.currentThread().getContextClassLoader().loadClass(providerClassName);
             } catch (ClassNotFoundException e1) {
+                log.error("ProxyServices.init: no such class" + providerClassName);
                 throw new RuntimeException(e1);
             }
         }
@@ -81,14 +89,15 @@ public class ProxyServices {
                 cache = (ICache) providerClass.newInstance();
             }
         } catch (InstantiationException | IllegalAccessException | SecurityException e) {
+            log.error("ProxyServices.init: ", e);
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @return the cache service
      */
-    public static final ICache getCache() {
+    public static ICache getCache() {
         return cache;
     }
 

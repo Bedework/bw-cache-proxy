@@ -21,25 +21,28 @@ package org.bedework.cache.vertx;
 import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.json.JsonObject;
+import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Verticle;
 
 /**
  * The main entry point into the vert.x implementation of the Bedework
  * caching proxy server.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class ProxyVerticle extends Verticle {
-    
+    private Logger log;
+
     /**
      * @see org.vertx.java.platform.Verticle#start()
      */
     @Override
     public void start() {
-        final boolean debugEnabled = this.container.config().getBoolean("debug");
-        
-        ProxyServices.init(this.container.config());
-        
+        log = container.logger();
+        final boolean debugEnabled = log.isDebugEnabled();
+
+        ProxyServices.init(log, this.container.config());
+
         JsonObject proxyTo = this.container.config().getObject("proxy-to");
         JsonObject localServer = this.container.config().getObject("local-server");
 
@@ -69,22 +72,23 @@ public class ProxyVerticle extends Verticle {
         if (localSSL) {
             String localKeystore = localServer.getObject("keystore").getString("path");
             String localKeystorePassword = localServer.getObject("keystore").getString("password");
-            
+
             httpServer = httpServer.setSSL(true).setKeyStorePath(localKeystore).setKeyStorePassword(localKeystorePassword);
         }
-        
+
         // Start up the local server
-        httpServer.requestHandler(new ProxyHandler(debugEnabled, instanceId, client)).listen(localPort);
-        
+        httpServer.requestHandler(new ProxyHandler(log,
+                instanceId, client)).listen(localPort);
+
         if (instanceId == 0) {
-            System.out.println("=====  ==============================  =====");
-            System.out.println("=====  Bedework Caching Proxy Started  =====");
-            System.out.println("=====  ==============================  =====");
-            System.out.println("         Listening on: " + localPort);
-            System.out.println("        Proxying Host: " + remoteHost);
-            System.out.println("                 Port: " + remotePort);
-            System.out.println("       Cache Provider: " + ProxyServices.getCache().getClass().getName());
-            System.out.println("=====  ==============================  =====");
+            log.info("=====  ==============================  =====");
+            log.info("=====  Bedework Caching Proxy Started  =====");
+            log.info("=====  ==============================  =====");
+            log.info("         Listening on: " + localPort);
+            log.info("        Proxying Host: " + remoteHost);
+            log.info("                 Port: " + remotePort);
+            log.info("       Cache Provider: " + ProxyServices.getCache().getClass().getName());
+            log.info("=====  ==============================  =====");
         }
     }
 }
