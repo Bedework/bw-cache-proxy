@@ -39,7 +39,6 @@ public class ProxyVerticle extends Verticle {
     @Override
     public void start() {
         log = container.logger();
-        final boolean debugEnabled = log.isDebugEnabled();
 
         ProxyServices.init(log, this.container.config());
 

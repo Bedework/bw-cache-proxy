@@ -18,6 +18,9 @@
 */
 package org.bedework.cache.vertx;
 
+import java.text.MessageFormat;
+import java.util.Map.Entry;
+
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
 import org.vertx.java.core.Handler;
@@ -28,9 +31,6 @@ import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.logging.Logger;
-
-import java.text.MessageFormat;
-import java.util.Map.Entry;
 
 /**
  * The http request handler used by the vert.x implementation of the bedework
@@ -65,8 +65,7 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
      * @param message
      * @param args
      */
-    protected final void debug(int id,
-                               String message, Object ... args) {
+    protected final void debug(int id, String message, Object... args) {
         if (debugEnabled) {
             log.debug("" + instanceId + "-" + id + ":: " + MessageFormat.format(message, args));
         }
@@ -118,6 +117,17 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                         justSend(requestId, clientResp, request);
                     }
                 });
+        // TODO parameterize this
+        clientReq.setTimeout(60000);
+        clientReq.exceptionHandler(new Handler<Throwable>() {
+            @Override
+            public void handle(Throwable event) {
+                debug(requestId, "    Proxy client error caught ({0}), responding with 500.", event.getMessage());
+                request.response().setStatusCode(500);
+                request.response().setStatusMessage(event.getMessage());
+                request.response().end();
+            }
+        });
         clientReq.headers().set(request.headers());
         clientReq.headers().set("Host", client.getHost() + ":" + client.getPort());
         if (cachedETag != null) {

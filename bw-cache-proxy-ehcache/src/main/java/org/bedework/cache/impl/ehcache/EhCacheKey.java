@@ -18,11 +18,9 @@
 */
 package org.bedework.cache.impl.ehcache;
 
-import org.bedework.cache.core.beans.CacheKeyBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
+
+import org.bedework.cache.core.beans.CacheKeyBean;
 
 /**
  * Cache key used by the ehcache impl.
