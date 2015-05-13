@@ -61,6 +61,7 @@
     <module>bw-cache-proxy-undertow</module>
     <module>bw-cache-proxy-vertx</module>
     <module>bw-cache-proxy-inmem</module>
+      <module>bw-cache-proxy-rewrite</module>
   </modules>
 
   <dependencyManagement>

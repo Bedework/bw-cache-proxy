@@ -25,6 +25,7 @@
         <module name="bw-cache-proxy-core" />
         <module name="bw-cache-proxy-ehcache" />
         <module name="bw-cache-proxy-inmem" />
+        <module name="bw-cache-proxy-rewrite" />
         <module name="bw-cache-proxy-undertow" />
         <module name="bw-cache-proxy-vertx" />
       </profile>
@@ -34,6 +35,7 @@
       <module name="bw-cache-proxy-core" target="1.7" />
       <module name="bw-cache-proxy-ehcache" target="1.7" />
       <module name="bw-cache-proxy-inmem" target="1.7" />
+      <module name="bw-cache-proxy-rewrite" target="1.7" />
       <module name="bw-cache-proxy-undertow" target="1.7" />
       <module name="bw-cache-proxy-vertx" target="1.7" />
     </bytecodeTargetLevel>

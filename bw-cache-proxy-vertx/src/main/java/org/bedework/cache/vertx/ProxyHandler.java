@@ -18,11 +18,10 @@
 */
 package org.bedework.cache.vertx;
 
-import java.text.MessageFormat;
-import java.util.Map.Entry;
-
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.VoidHandler;
 import org.vertx.java.core.buffer.Buffer;
@@ -30,7 +29,9 @@ import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
 import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.logging.Logger;
+
+import java.text.MessageFormat;
+import java.util.Map.Entry;
 
 /**
  * The http request handler used by the vert.x implementation of the bedework
@@ -39,7 +40,7 @@ import org.vertx.java.core.logging.Logger;
  * @author eric.wittmann@redhat.com
  */
 public class ProxyHandler implements Handler<HttpServerRequest> {
-    private Logger log;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private boolean debugEnabled;
     private int instanceId;
@@ -48,12 +49,11 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
 
     /**
      * Constructor.
-     * @param instanceId
-     * @param client
+     * @param instanceId for logging
+     * @param client our client
      */
-    public ProxyHandler(final Logger log,
-                        int instanceId, HttpClient client) {
-        this.log = log;
+    public ProxyHandler(final int instanceId,
+                        final HttpClient client) {
         debugEnabled = log.isDebugEnabled();
         this.instanceId = instanceId;
         this.client = client;

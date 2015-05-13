@@ -19,9 +19,9 @@
 package org.bedework.cache.vertx;
 
 import org.bedework.cache.core.ICache;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.logging.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +36,7 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public class ProxyServices {
-    private static Logger log;
+    private final static Logger log = LoggerFactory.getLogger(ProxyServices.class);
 
     private static int instanceCounter = 0;
     private static ICache cache;
@@ -52,10 +52,7 @@ public class ProxyServices {
      * Initialize and configure the services.
      * @param config
      */
-    public static synchronized void init(final Logger logger,
-            JsonObject config) {
-        log = logger;
-
+    public static synchronized void init(final JsonObject config) {
         if (cache != null) {
             return;
         }

@@ -18,10 +18,11 @@
 */
 package org.bedework.cache.vertx;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Verticle;
 
 /**
@@ -31,16 +32,16 @@ import org.vertx.java.platform.Verticle;
  * @author eric.wittmann@redhat.com
  */
 public class ProxyVerticle extends Verticle {
-    private Logger log;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * @see org.vertx.java.platform.Verticle#start()
      */
     @Override
     public void start() {
-        log = container.logger();
+        final boolean debugEnabled = log.isDebugEnabled();
 
-        ProxyServices.init(log, this.container.config());
+        ProxyServices.init(this.container.config());
 
         JsonObject proxyTo = this.container.config().getObject("proxy-to");
         JsonObject localServer = this.container.config().getObject("local-server");
@@ -76,8 +77,7 @@ public class ProxyVerticle extends Verticle {
         }
 
         // Start up the local server
-        httpServer.requestHandler(new ProxyHandler(log,
-                instanceId, client)).listen(localPort);
+        httpServer.requestHandler(new ProxyHandler(instanceId, client)).listen(localPort);
 
         if (instanceId == 0) {
             log.info("=====  ==============================  =====");

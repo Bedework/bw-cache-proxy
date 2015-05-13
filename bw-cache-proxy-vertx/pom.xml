@@ -50,7 +50,7 @@
       <artifactId>vertx-hazelcast</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Library Dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -118,6 +118,7 @@
       </plugin>
 
       <!-- Other plugins required by the build -->
+        <!--
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>${maven.resources.plugin.version}</version>
@@ -140,6 +141,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -169,8 +171,29 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>${maven.dependency.plugin.version}</version>
+            <executions>
+                <execution>
+                    <id>copy-mod-dependencies-to-target-dependencies</id>
+                    <phase>process-classes</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>target/provided</outputDirectory>
+                        <includeScope>provided</includeScope>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
+        <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.5.3</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/mod.xml</descriptor>
@@ -183,6 +206,11 @@
             <goals>
               <goal>single</goal>
             </goals>
+              <configuration>
+                  <descriptors>
+                      <descriptor>src/main/assembly/mod.xml</descriptor>
+                  </descriptors>
+              </configuration>
           </execution>
         </executions>
       </plugin>
