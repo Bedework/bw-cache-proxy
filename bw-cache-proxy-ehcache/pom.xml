@@ -11,9 +11,9 @@
   <dependencies>
     <!-- Proxy Dependencies -->
     <dependency>
-      <groupId>${groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>bw-cache-proxy-core</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <!-- Third Party Dependencies -->

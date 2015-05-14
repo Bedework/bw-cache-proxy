@@ -39,8 +39,6 @@ public class ProxyVerticle extends Verticle {
      */
     @Override
     public void start() {
-        final boolean debugEnabled = log.isDebugEnabled();
-
         ProxyServices.init(this.container.config());
 
         JsonObject proxyTo = this.container.config().getObject("proxy-to");

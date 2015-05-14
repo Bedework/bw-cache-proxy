@@ -12,7 +12,7 @@
   <properties>
     <vertx.pullInDeps>false</vertx.pullInDeps>
     <vertx.createFatJar>false</vertx.createFatJar>
-    <module.name>${project.groupId}~${project.artifactId}~${project.version}</module.name>
+    <mod.name>${project.groupId}~${project.artifactId}~${project.version}</mod.name>
     <mods.directory>target/mods</mods.directory>
   </properties>
 
@@ -159,7 +159,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>copy-mod-dependencies-to-target-dependencies</id>
+            <id>copy-mod-dependencies-to-target-dependencies-1</id>
             <phase>process-classes</phase>
             <goals>
               <goal>copy-dependencies</goal>
@@ -169,29 +169,21 @@
               <includeScope>runtime</includeScope>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-mod-dependencies-to-target-dependencies-2</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/provided</outputDirectory>
+              <includeScope>provided</includeScope>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>${maven.dependency.plugin.version}</version>
-            <executions>
-                <execution>
-                    <id>copy-mod-dependencies-to-target-dependencies</id>
-                    <phase>process-classes</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>target/provided</outputDirectory>
-                        <includeScope>provided</includeScope>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-
-        <plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.5.3</version>
         <configuration>
@@ -206,11 +198,11 @@
             <goals>
               <goal>single</goal>
             </goals>
-              <configuration>
-                  <descriptors>
-                      <descriptor>src/main/assembly/mod.xml</descriptor>
-                  </descriptors>
-              </configuration>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/mod.xml</descriptor>
+              </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>
