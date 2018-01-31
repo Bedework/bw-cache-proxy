@@ -31,12 +31,12 @@
     </list>
     <ignored path="bw-cache-proxy.iws" />
     <ignored path=".idea/workspace.xml" />
-    <ignored path=".idea/libraries/Maven__io_vertx_vertx_platform_2_1RC2.xml" />
-    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_2_2.xml" />
-    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_2_2.xml" />
+    <ignored path=".idea/libraries/Maven__io_vertx_vertx_platform_2_1.5.xml" />
+    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_7_9.xml" />
+    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_7_9.xml" />
     <ignored path=".idea/libraries/Maven__org_jboss_xnio_xnio_api_3_2_0_Final.xml" />
     <ignored path=".idea/libraries/Maven__net_sf_ehcache_ehcache_2_8_1.xml" />
-    <ignored path=".idea/libraries/Maven__io_vertx_vertx_hazelcast_2_1RC2.xml" />
+    <ignored path=".idea/libraries/Maven__io_vertx_vertx_hazelcast_2_1.5.xml" />
     <ignored path=".idea/libraries/Maven__io_netty_netty_3_9_0_Final.xml" />
     <ignored path=".idea/libraries/Maven__org_jboss_spec_javax_servlet_jboss_servlet_api_3_1_spec_1_0_0_Final.xml" />
     <ignored path=".idea/libraries/Maven__com_ning_async_http_client_1_8_5.xml" />
@@ -46,9 +46,9 @@
     <ignored path=".idea/libraries/Maven__io_netty_netty_all_4_0_17_Final.xml" />
     <ignored path=".idea/libraries/Maven__org_jboss_logging_jboss_logging_3_1_4_GA.xml" />
     <ignored path=".idea/libraries/Maven__io_undertow_undertow_servlet_1_0_1_Final.xml" />
-    <ignored path=".idea/libraries/Maven__io_vertx_vertx_core_2_1RC2.xml" />
+    <ignored path=".idea/libraries/Maven__io_vertx_vertx_core_2_1.5.xml" />
     <ignored path=".idea/libraries/Maven__io_undertow_undertow_core_1_0_1_Final.xml" />
-    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_2_2.xml" />
+    <ignored path=".idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_7_9.xml" />
     <ignored path=".idea/libraries/Maven__com_hazelcast_hazelcast_2_6_7.xml" />
     <ignored path=".idea/libraries/Maven__org_jboss_xnio_xnio_nio_3_2_0_Final.xml" />
     <ignored path=".idea/libraries/Maven__org_slf4j_slf4j_api_1_7_7.xml" />
@@ -1294,14 +1294,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core/2.1RC2/vertx-core-2.1RC2.jar!/org/vertx/java/core/json/JsonObject.class">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core/2.1.5/vertx-core-2.1.5.jar!/org/vertx/java/core/json/JsonObject.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.04405286" vertical-offset="45" max-vertical-offset="1485">
           <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core/2.1RC2/vertx-core-2.1RC2-sources.jar!/org/vertx/java/core/json/JsonObject.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core/2.1.5/vertx-core-2.1.5-sources.jar!/org/vertx/java/core/json/JsonObject.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.30837005" vertical-offset="0" max-vertical-offset="4185">
           <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />

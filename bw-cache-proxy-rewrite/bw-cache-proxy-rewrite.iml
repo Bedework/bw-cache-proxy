@@ -12,14 +12,14 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bw-cache-proxy-core" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-core:2.1RC2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-core:2.1.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.9" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-all:4.0.17.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-platform:2.1RC2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-platform:2.1.5" level="project" />
   </component>
 </module>
 
