@@ -13,7 +13,7 @@
     <!-- The embedded api factory class which also starts the service -->
     <fileSet>
       <directory>${project.build.directory}</directory>
-      <outputDirectory>vertx/mods/${mod.name}/lib</outputDirectory>
+      <outputDirectory>vert.x/mods/${mod.name}/lib</outputDirectory>
       <includes>
         <include>*.jar</include>
       </includes>
@@ -21,14 +21,14 @@
 
     <fileSet>
       <directory>${project.build.directory}/provided</directory>
-      <outputDirectory>vertx/lib</outputDirectory>
+      <outputDirectory>vert.x/lib</outputDirectory>
       <includes>
         <include>*.jar</include>
       </includes>
     </fileSet>
 
     <fileSet>
-      <outputDirectory>vertx/mods/${mod.name}</outputDirectory>
+      <outputDirectory>vert.x/mods/${mod.name}</outputDirectory>
       <directory>${mods.directory}/${mod.name}</directory>
       <includes>
         <include>**</include>
@@ -40,59 +40,70 @@
     <!-- vertx -->
     <file>
       <source>src/main/resources/vertx</source>
-      <outputDirectory>vertx/bin</outputDirectory>
+      <outputDirectory>vert.x/bin</outputDirectory>
       <fileMode>755</fileMode>
     </file>
 
     <!-- vertx.bat -->
     <file>
       <source>src/main/resources/vertx.bat</source>
-      <outputDirectory>vertx/bin</outputDirectory>
+      <outputDirectory>vert.x/bin</outputDirectory>
     </file>
 
     <!-- conf directory -->
     <file>
       <source>src/main/config/bw-cache-proxy-vertx.conf</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
       <destName>cache.conf</destName>
     </file>
 
     <file>
       <source>src/main/config/cluster.xml</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
     </file>
 
     <file>
       <source>src/main/config/ehcache.xml</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
     </file>
 
     <file>
       <source>src/main/config/langs.properties</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
     </file>
 
     <file>
       <source>src/main/config/logging.properties</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
     </file>
 
     <file>
       <source>src/main/config/repos.txt</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
     </file>
 
     <!-- log4j.xml -->
     <file>
       <source>src/main/resources/log4j.xml</source>
-      <outputDirectory>vertx/conf</outputDirectory>
+      <outputDirectory>vert.x/conf</outputDirectory>
+    </file>
+    <file>
+      <source></source>
+      <outputDirectory>vert.x/log</outputDirectory>
     </file>
 
     <!-- mod.json -->
     <file>
       <source>src/main/resources/mod.json</source>
-      <outputDirectory>vertx/mods/${mod.name}</outputDirectory>
+      <outputDirectory>vert.x/mods/${mod.name}</outputDirectory>
     </file>
+
+    <!-- runcache  -->
+    <file>
+      <source>src/main/resources/runcache.sh</source>
+      <outputDirectory></outputDirectory>
+    </file>
+
   </files>
 </assembly>
 
