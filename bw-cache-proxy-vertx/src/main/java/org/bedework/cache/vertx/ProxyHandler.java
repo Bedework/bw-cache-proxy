@@ -18,6 +18,9 @@
 */
 package org.bedework.cache.vertx;
 
+import java.text.MessageFormat;
+import java.util.Map.Entry;
+
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
 import org.slf4j.Logger;
@@ -29,9 +32,7 @@ import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
 import org.vertx.java.core.http.HttpServerRequest;
-
-import java.text.MessageFormat;
-import java.util.Map.Entry;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * The http request handler used by the vert.x implementation of the bedework
@@ -42,9 +43,11 @@ import java.util.Map.Entry;
 public class ProxyHandler implements Handler<HttpServerRequest> {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private boolean debugEnabled;
-    private int instanceId;
-    private HttpClient client;
+    private final boolean debugEnabled;
+    private final boolean throttlingEnabled;
+    private final long throttlingWindow;
+    private final int instanceId;
+    private final HttpClient client;
     private int requestCounter = 0;
 
     /**
@@ -52,11 +55,13 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
      * @param instanceId for logging
      * @param client our client
      */
-    public ProxyHandler(final int instanceId,
-                        final HttpClient client) {
+    public ProxyHandler(final int instanceId, final HttpClient client, final JsonObject config) {
         debugEnabled = log.isDebugEnabled();
         this.instanceId = instanceId;
         this.client = client;
+        JsonObject throttlingCfg = config.getObject("throttling");
+        throttlingEnabled = throttlingCfg.getBoolean("enabled", false);
+        throttlingWindow = 1000L * (Long) throttlingCfg.getLong("window", 10);
     }
 
     /**
@@ -85,6 +90,13 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
         // Check the cache for the page
         final String requestedETag = request.headers().get("If-None-Match");
         final String cachedETag = ProxyServices.getCache().getETag(key);
+        final Long cacheEntryTimestamp = ProxyServices.getCache().getTimestamp(key);
+        
+        if (isThrottled(cacheEntryTimestamp)) {
+            debug(requestId, "Rate limiting enabled, request will not be proxied (cached copy used).");
+            sendCachedCopy(requestId, request, key);
+            return;
+        }
 
         debug(requestId, "Proxying request: " + uri);
         debug(requestId, "    Requested ETag: " + requestedETag);
@@ -153,6 +165,29 @@ public class ProxyHandler implements Handler<HttpServerRequest> {
                 clientReq.end();
             }
         });
+    }
+
+    /**
+     * Called to determine if the cache entry timestamp falls within the window of 
+     * time configured to limit the rate at which requests are proxied to Bedework.
+     * If the timestamp of the cache entry falls within the window, then it will
+     * *not* be proxied - instead we will use the cached respone regardless of the
+     * e-tag value.
+     * @param cacheEntryTimestamp the timestamp (millis since the epoch) of the cached entry
+     * @return true if the cache entry's timestamp is within the throttling period
+     */
+    private boolean isThrottled(Long cacheEntryTimestamp) {
+        if (cacheEntryTimestamp == null) {
+            return false;
+        }
+        if (throttlingEnabled) {
+            long now = System.currentTimeMillis();
+            long windowStart = cacheEntryTimestamp;
+            long windowEnd = cacheEntryTimestamp + throttlingWindow;
+            return now >= windowStart && now < windowEnd;
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -29,6 +29,14 @@ import org.bedework.cache.core.beans.HttpResponseBean;
  * @author eric.wittmann@redhat.com
  */
 public interface ICache {
+
+    /**
+     * Gets the timestamp when the entry was cached.  This would allow TTL 
+     * caching in addition to e-tag caching.
+     * @param key a cache key
+     * @return the datestamp (time in millis) when the entry was cached or null if not cached
+     */
+    public Long getTimestamp(CacheKeyBean key);
     
     /**
      * Gets the ETag associated with the cached response for the given cache key.

@@ -18,13 +18,13 @@
 */
 package org.bedework.cache.rewrite;
 
+import java.text.MessageFormat;
+
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.VoidHandler;
 import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.logging.Logger;
-
-import java.text.MessageFormat;
 
 /**
  * User: douglm
@@ -36,7 +36,7 @@ public class RewriteHandler implements Handler<HttpServerRequest> {
 
     private boolean debugEnabled;
     private int instanceId;
-    private HttpClient client;
+//    private HttpClient client;
     private int requestCounter = 0;
 
     /**
@@ -51,7 +51,7 @@ public class RewriteHandler implements Handler<HttpServerRequest> {
         this.log = log;
         debugEnabled = log.isDebugEnabled();
         this.instanceId = instanceId;
-        this.client = client;
+//        this.client = client;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class RewriteHandler implements Handler<HttpServerRequest> {
         final int requestId = requestCounter++;
 
         final String uri = request.uri();
-        final String method = request.method();
+//        final String method = request.method();
 
         debug(requestId, "Rewriting: " + uri);
 

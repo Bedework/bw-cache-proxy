@@ -33,8 +33,7 @@ import org.bedework.cache.core.beans.HttpResponseBean;
  */
 public class InMemoryCache implements ICache {
     
-    private Map<CacheKeyBean, String> etags = new HashMap<CacheKeyBean, String>();
-    private Map<CacheKeyBean, HttpResponseBean> responses = new HashMap<CacheKeyBean, HttpResponseBean>();
+    private Map<CacheKeyBean, CacheEntry> cache = new HashMap<CacheKeyBean, CacheEntry>();
 
     /**
      * Constructor.
@@ -47,7 +46,15 @@ public class InMemoryCache implements ICache {
      */
     @Override
     public synchronized String getETag(CacheKeyBean key) {
-        return etags.get(key);
+        return cache.get(key).etag;
+    }
+    
+    /**
+     * @see org.bedework.cache.core.ICache#getTimestamp(org.bedework.cache.core.beans.CacheKeyBean)
+     */
+    @Override
+    public synchronized Long getTimestamp(CacheKeyBean key) {
+        return cache.get(key).timestamp;
     }
 
     /**
@@ -55,7 +62,7 @@ public class InMemoryCache implements ICache {
      */
     @Override
     public synchronized HttpResponseBean getResponse(CacheKeyBean key) {
-        return responses.get(key);
+        return cache.get(key).response;
     }
     
     /**
@@ -63,8 +70,16 @@ public class InMemoryCache implements ICache {
      */
     @Override
     public synchronized void updateCache(CacheKeyBean key, String etag, HttpResponseBean response) {
-        etags.put(key, etag);
-        responses.put(key, response);
+        CacheEntry entry = new CacheEntry();
+        entry.timestamp = System.currentTimeMillis();
+        entry.etag = etag;
+        entry.response = response;
+        cache.put(key, entry);
     }
     
+    private static final class CacheEntry {
+        public long timestamp;
+        public String etag;
+        public HttpResponseBean response;
+    }
 }

@@ -75,7 +75,7 @@ public class ProxyVerticle extends Verticle {
         }
 
         // Start up the local server
-        httpServer.requestHandler(new ProxyHandler(instanceId, client)).listen(localPort);
+        httpServer.requestHandler(new ProxyHandler(instanceId, client, this.container.config())).listen(localPort);
 
         if (instanceId == 0) {
             log.info("=====  ==============================  =====");
