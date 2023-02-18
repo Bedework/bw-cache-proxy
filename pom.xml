@@ -23,7 +23,7 @@
     <bedework.snapshots.repo.url>scp://dev.bedework.org/data/repository/maven/maven2</bedework.snapshots.repo.url>
 
     <!-- Third Party Library Versions -->
-    <vertx.version>2.1RC2</vertx.version>
+    <vertx.version>2.1.6</vertx.version>
     <undertow.version>1.4.0.Final</undertow.version>
     <async-http-client.version>1.8.5</async-http-client.version>
     <servlet-api.version>2.5</servlet-api.version>
