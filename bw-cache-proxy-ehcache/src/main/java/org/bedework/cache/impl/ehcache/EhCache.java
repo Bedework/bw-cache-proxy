@@ -18,17 +18,18 @@
 */
 package org.bedework.cache.impl.ehcache;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
+import java.util.Map;
+
 import org.bedework.cache.core.ICache;
 import org.bedework.cache.core.beans.CacheKeyBean;
 import org.bedework.cache.core.beans.HttpResponseBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * An implementation of a cache that uses ehcache.
@@ -57,6 +58,28 @@ public class EhCache implements ICache {
         } catch (CacheException | IllegalStateException e) {
             log.error("Exception:", e);
             throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @see org.bedework.cache.core.ICache#getTimestamp(org.bedework.cache.core.beans.CacheKeyBean)
+     */
+    @Override
+    public Long getTimestamp(CacheKeyBean key) {
+        EhCacheKey etagKey = new EhCacheKey(key, true);
+        Cache cache = manager.getCache("proxyCache");
+        cache.acquireReadLockOnKey(etagKey);
+
+        try {
+            Element element = cache.get(etagKey);
+            if (element != null) {
+                long time = element.getCreationTime();
+                return time;
+            } else {
+                return null;
+            }
+        } finally {
+            cache.releaseReadLockOnKey(etagKey);
         }
     }
 
