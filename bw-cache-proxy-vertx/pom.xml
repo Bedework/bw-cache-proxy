@@ -51,6 +51,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Library Dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -131,7 +145,7 @@
             </goals>
             <configuration>
               <overwrite>true</overwrite>
-              <outputDirectory>${mods.directory}/${module.name}</outputDirectory>
+              <outputDirectory>${mods.directory}/${mod.name}</outputDirectory>
               <resources>
                 <resource>
                   <directory>target/classes</directory>

@@ -15,13 +15,14 @@
     <orderEntry type="module" module-name="bw-cache-proxy-ehcache" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache:2.8.1" level="project" />
     <orderEntry type="module" module-name="bw-cache-proxy-inmem" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-core:2.1RC2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-core:2.1.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.9" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-all:4.0.17.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-platform:2.1RC2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-hazelcast:2.1RC2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-platform:2.1.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-hazelcast:2.1.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.hazelcast:hazelcast:2.6.7" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.7" level="project" />
